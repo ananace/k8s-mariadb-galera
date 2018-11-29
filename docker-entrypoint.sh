@@ -174,10 +174,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		echo
 		for f in /docker-entrypoint-initdb.d/*; do
 			case "$f" in
-				*.sh)	 echo "$0: running $f"; . "$f" ;;
-				*.sql)	echo "$0: running $f"; "${mysql[@]}" < "$f"; echo ;;
+				*.sh)     echo "$0: running $f"; . "$f" ;;
+				*.sql)    echo "$0: running $f"; "${mysql[@]}" < "$f"; echo ;;
 				*.sql.gz) echo "$0: running $f"; gunzip -c "$f" | "${mysql[@]}"; echo ;;
-				*)		echo "$0: ignoring $f" ;;
+				*)        echo "$0: ignoring $f" ;;
 			esac
 			echo
 		done
@@ -193,7 +193,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	fi
 
 	# Avoid restart issues after shutdowns
-	sed -e 's/safe_to_bootstrap: .*/safe_to_bootstrap: 1/' -i "$DATADIR/grastate.dat"
+	[ -f "$DATADIR/grastate.dat" ] && \
+		sed -e 's/safe_to_bootstrap: .*/safe_to_bootstrap: 1/' -i "$DATADIR/grastate.dat"
 fi
 
 exec "$@"
